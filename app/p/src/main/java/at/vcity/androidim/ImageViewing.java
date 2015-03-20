@@ -31,7 +31,7 @@ public class ImageViewing extends Activity {
         super.onCreate(savedInstanceState);
 
         Bundle extras = this.getIntent().getExtras();
-        imgname=extras.getString(ImageInfo.IMAGE_BYTES);
+        imgname=extras.getString(ImageInfo.IMAGE_NAME);
         key = extras.getString(ImageInfo.IMAGE_KEY);
         Context context= this.getApplicationContext();
 
