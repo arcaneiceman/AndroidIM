@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Users\Wali\AndroidstudioProjects\AndroidIM\app\libs\commons-lang3-3.3.2.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="659861b4acde07a0527211e40d256119face1d15">
+        <dex dex="C:\Users\Wali\AndroidstudioProjects\AndroidIM\app\build\intermediates\pre-dexed\debug\commons-lang3-3.3.2-933bf0e88ad4c3d11a788a5efd7af24904645ede.jar" />
+    </item>
+    <item
+        jar="C:\Users\Wali\AndroidstudioProjects\AndroidIM\app\libs\org-apache-commons-codec.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="2c43da28fbfa9ab6bec0101c38d1084762e09032">
+        <dex dex="C:\Users\Wali\AndroidstudioProjects\AndroidIM\app\build\intermediates\pre-dexed\debug\org-apache-commons-codec-0aee1012181358e50a614e64e98e83e3afba8f2a.jar" />
+    </item>
+    <item
+        jar="C:\Users\Wali\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-v4\18.0.0\support-v4-18.0.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="44ec51e9d395a47aab135e5e1b556c0007442156">
+        <dex dex="C:\Users\Wali\AndroidstudioProjects\AndroidIM\app\build\intermediates\pre-dexed\debug\support-v4-18.0.0-5ac806ac4eacd2bb73c9e9903b86069545d221b5.jar" />
+    </item>
+
+</items>

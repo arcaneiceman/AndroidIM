@@ -1,0 +1,4 @@
+C:\Users\Wali\AndroidstudioProjects\AndroidIM\app\build\intermediates\classes\debug
+C:\Users\Wali\AndroidstudioProjects\AndroidIM\app\build\intermediates\pre-dexed\debug\org-apache-commons-codec-0aee1012181358e50a614e64e98e83e3afba8f2a.jar
+C:\Users\Wali\AndroidstudioProjects\AndroidIM\app\build\intermediates\pre-dexed\debug\commons-lang3-3.3.2-933bf0e88ad4c3d11a788a5efd7af24904645ede.jar
+C:\Users\Wali\AndroidstudioProjects\AndroidIM\app\build\intermediates\pre-dexed\debug\support-v4-18.0.0-5ac806ac4eacd2bb73c9e9903b86069545d221b5.jar
