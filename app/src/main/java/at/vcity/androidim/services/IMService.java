@@ -226,6 +226,19 @@ public class IMService extends Service implements IAppManager, IUpdateData {
         //
 	}
 
+    public String ReqKeyMessage(String  username, String  tousername ,String picname, String TGT) throws UnsupportedEncodingException
+    {
+        String params = "username="+ URLEncoder.encode(this.username,"UTF-8") +
+                "&password="+ URLEncoder.encode(this.password,"UTF-8") +
+                "&picname="+ URLEncoder.encode(picname,"UTF-8") +
+                "&tgt="+ URLEncoder.encode(TGT, "UTF-8") +
+                "&action="  + URLEncoder.encode("ReqPicKey","UTF-8")+
+                "&";
+        Log.i("PARAMS", params);
+        String result = socketOperator.sendHttpRequest(params);
+        return result;
+    }
+
 
 
 	

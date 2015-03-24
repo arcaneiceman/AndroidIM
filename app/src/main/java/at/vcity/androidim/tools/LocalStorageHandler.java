@@ -82,11 +82,10 @@ public class LocalStorageHandler extends SQLiteOpenHelper {
 
     }
 
-    public Cursor Update(String picname, String TGT){
+    public void Update(String picname, String TGT){
         SQLiteDatabase db = getWritableDatabase();
-        String Update_Query= "UPDATE "+ TABLE_NAME_MESSAGES + " SET " + MESSAGE_TGT + " = " + TGT + " WHERE " + MESSAGE_PICLINK + " LIKE " + picname + ";";
-
-        return db.rawQuery(Update_Query,null);
+        String Update_Query= "UPDATE "+ TABLE_NAME_MESSAGES + " SET " + MESSAGE_TGT + " = '" + TGT + "' WHERE " + MESSAGE_PICLINK + " LIKE '" + picname + "';";
+        db.execSQL(Update_Query);
     }
 
     public Cursor get(String sender, String receiver) {
@@ -102,7 +101,7 @@ public class LocalStorageHandler extends SQLiteOpenHelper {
 
     public Cursor getTGT(String pic){
         SQLiteDatabase db = getWritableDatabase();
-        String Select_Query = "SELECT " + MESSAGE_TGT + " FROM " + TABLE_NAME_MESSAGES + " WHERE " + MESSAGE_PICLINK + " LIKE " + pic + " ;";
+        String Select_Query = "SELECT " + MESSAGE_TGT + " FROM " + TABLE_NAME_MESSAGES + " WHERE " + MESSAGE_PICLINK + " LIKE '" + pic + "' ;";
         return db.rawQuery(Select_Query,null);
     }
 

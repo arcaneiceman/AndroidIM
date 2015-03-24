@@ -25,6 +25,15 @@
                 </category>
             </intent-filter>
         </activity>
+        <activity android:name=".ImageViewing">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"></action>
+                <category
+                    android:name="android.intent.category.NORMAL">
+                </category>
+            </intent-filter>
+        </activity>
+
         <service android:name=".services.IMService"></service>
         <activity android:name=".Login">
             <intent-filter>
@@ -34,14 +43,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".Messaging">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"></action>
-                <category
-                    android:name="android.intent.category.NORMAL">
-                </category>
-            </intent-filter>
-        </activity>
-        <activity android:name=".ImageViewing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"></action>
                 <category

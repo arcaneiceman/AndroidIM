@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -15,6 +16,7 @@ import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -70,6 +72,7 @@ public class Messaging extends Activity {
 	private FriendInfo friend = new FriendInfo();
 	private LocalStorageHandler localstoragehandler; 
 	private Cursor dbCursor;
+    private ProgressDialog Fetchdialog;
 	
 	private ServiceConnection mConnection = new ServiceConnection() {
       
@@ -120,7 +123,7 @@ public class Messaging extends Activity {
 
         Linkify.addLinks(messageHistoryText, Linkify.WEB_URLS);
 
-		/*
+
 		localstoragehandler = new LocalStorageHandler(this);
 		dbCursor = localstoragehandler.get(friend.userName, IMService.USERNAME );
 		
@@ -136,7 +139,7 @@ public class Messaging extends Activity {
 		    }
 		}
 		localstoragehandler.close();
-		*/
+
 		if (msg != null) 
 		{
 			this.appendToMessageHistory(friend.userName , msg, null);
@@ -154,7 +157,7 @@ public class Messaging extends Activity {
                 if (message.length()>0){
                     //These is a message therefore lets process it
                     appendToMessageHistory(imService.getUsername(), message.toString(),"");
-                    //localstoragehandler.insert(imService.getUsername(), friend.userName, message.toString() ,null ,null);
+                    localstoragehandler.insert(imService.getUsername(), friend.userName, message.toString() ,null ,null);
                     messageText.setText("");
                     Thread thread = new Thread() {
                         public void run() {
@@ -203,6 +206,9 @@ public class Messaging extends Activity {
                                     output.createNewFile();
                                 }
                                 ArrayList<byte[]> imagetosend= new ArrayList<byte[]>();
+
+
+                                   //CHNAGE TO ARBIRTARTY keys
                                 byte [] encryptedpic=CryptoFileUtils.encrypt(fkey,input,output);
                                 //PictureMessage imagetosend = new PictureMessage(encryptedpic,outputfilename);
                                 imagetosend.add(encryptedpic);
@@ -216,12 +222,13 @@ public class Messaging extends Activity {
                                 tkey=null;
                                 System.gc();
                                 //log this at local side
-                                //localstoragehandler.insert(imService.getUsername(), friend.userName, "",outputfilename,null);
+                                localstoragehandler.insert(imService.getUsername(), friend.userName, "",outputfilename,null);// null is the TGT
                                    System.out.println("Return was : "+result);
                                 if (result!= null){
                                     //did not fail GOT TGT REPLY
                                     //parse TGT
-                                    //localstoragehandler.Update(outputfilename,result);
+                                    //reult is stored
+                                    localstoragehandler.Update(outputfilename,result);
                                     //now add TGT to your answer
                                 }
                                 else
@@ -365,48 +372,77 @@ public class Messaging extends Activity {
             }
             else{
                 messageHistoryText.append(username + ":\n");
-
-                //make it depend on who sent it
-                System.out.println("was in append");
-                //messageHistoryText.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                 //       getResources().getDrawable(R.drawable.blacksquare), null);
                 Drawable d = getResources().getDrawable(R.drawable.blacksquare);
-                //d.setBounds(new Rect(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight()));
-                //messageHistoryText.setCompoundDrawables(null, d, null, null);
-                //contactLine.setOnTouchListener(new OnTouchListener() {
-                //below works but not touchable
                 ClickableSpan CSpan = new ClickableSpan() {
-
-                    String name=picname;
                     @Override
                     public void onClick(View view) {
-                        System.out.println("HOLY SHIT IM IN");
 
-                        Intent i = new Intent(getBaseContext(), ImageViewing.class);
-                        //ImageInfo im = new ImageInfo();
-                        i.putExtra(ImageInfo.IMAGE_NAME,name);
-                        //GET KEY
-                        i.putExtra(ImageInfo.IMAGE_KEY, "00000000000000000");
-                        startActivity(i);
+                        AsyncTask<String, String, String> FetchKeyThread= new AsyncTask<String , String , String>(){
+                            String key= "";
 
+                            @Override
+                            protected void onPreExecute(){
+                                super.onPreExecute();
+                                Fetchdialog= ProgressDialog.show(Messaging.this, "", "Hold on, Fetching Key");
+                                Fetchdialog.setCancelable(false);
+                            }
+
+                            @Override
+                            protected String doInBackground(String... arg0) {
+                                key=GetKey(picname);
+                                System.out.println("Key : " + key );
+                                return key;
+                            }
+
+                            @Override
+                            protected void onPostExecute(String NewSongPath) {
+                                Fetchdialog.dismiss();
+                                Intent i = new Intent(getBaseContext(), ImageViewing.class);
+                                //ImageInfo im = new ImageInfo();
+                                i.putExtra(ImageInfo.IMAGE_NAME,picname);
+                                i.putExtra(ImageInfo.IMAGE_KEY, key);
+                                startActivity(i);
+                            }
+                        };
+                        FetchKeyThread.execute();
                     }
                 };
 
-                //Cspan.
                 SpannableString ss = new SpannableString("abc\n");
-
                 d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
                 ImageSpan span = new ImageSpan(d, ImageSpan.ALIGN_BASELINE);
                 ss.setSpan(span, 0, 3, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
                 ss.setSpan(CSpan,0,3, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                 messageHistoryText.append(ss);
-                //messageHistoryText.append("www.ali.com \n");
-
             }
             messageHistoryText.setMovementMethod(LinkMovementMethod.getInstance());
 		}
 	}
-	
+
+    public String GetKey(String picname){
+        //First we must secure TGT From DataBase
+        String output="";
+        try{
+            String TGT="";
+            Cursor cursor = localstoragehandler.getTGT(picname);
+            if(cursor!=null && cursor.getCount()>0)
+            {
+                cursor.moveToFirst();
+                do {
+                    TGT = cursor.getString(0);
+                } while (cursor.moveToNext());
+            }
+            System.out.println("Recovered TGT : " + TGT);
+            //Now request server for KEY
+            TGT="/L5sofF1YBlrjKH156g37Q==";
+            output=imService.ReqKeyMessage(imService.getUsername(), friend.userName,picname,TGT);
+        }
+        catch (Exception E){
+            System.err.println("ERRRRRROR");
+            E.printStackTrace();
+        }
+        return output;
+    }
 	
 	@Override
 	protected void onDestroy() {

@@ -21,7 +21,7 @@ import at.vcity.androidim.interfaces.ISocketOperator;
 
 public class SocketOperator implements ISocketOperator
 {
-	private static final String AUTHENTICATION_SERVER_ADDRESS = "http://atlantis-desktop.nss.cs.ubc.ca/android-im/index2.php";
+	private static final String AUTHENTICATION_SERVER_ADDRESS = "http://198.162.52.90/android-im/index2.php";
 	//This is to be changed
 	private int listeningPort = 0;
 	

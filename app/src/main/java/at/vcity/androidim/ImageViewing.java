@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -42,15 +43,23 @@ public class ImageViewing extends Activity {
         int screenWidth = size.x;
         int screenHeight = size.y;
         byte[] data= null;
+        System.out.println("Key was "  +key);
         try{
-            //data = CryptoFileUtils.decrypt(key,new File("/storage/sdcard/Download/"+imgname));
-            File newFile = new File ("/storage/sdcard/Download/"+imgname);
-            FileInputStream inputStream= new FileInputStream(newFile);
-            inputStream.read(data);
-            inputStream.close();
+            File newFile = new File (imgname);
+            System.out.println("File exists : " +newFile.getAbsolutePath() + " "+  newFile.exists());
+            data = CryptoFileUtils.decrypt(key,newFile);
+
+            //File newFile = new File ("/storage/sdcard/Download/webcam-toy-photo1.jpg");
+            //System.out.println("File exists : " +newFile.getAbsolutePath() + " "+  newFile.exists());
+            //FileInputStream inputStream= new FileInputStream(newFile);
+            //data= new byte[(int)newFile.length()];
+            //inputStream.read(data);
+            //inputStream.close();
+            System.out.println("lenght =  " + data.length);
         }
         catch (Exception E){
-            this.finish();
+            System.err.println("It finished prematurely.");
+            E.printStackTrace();
         }
 
 
@@ -69,15 +78,17 @@ public class ImageViewing extends Activity {
 
 // Create resized bitmap image
         BitmapDrawable resizedBitmap = new BitmapDrawable(context.getResources(), Bitmap.createScaledBitmap(bitmap, bitmapWidth, bitmapHeight, false));
-
+        setContentView(R.layout.image_view);
 // Create dialog
-        Dialog dialog = new Dialog(context);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.image_view);
+        // dialog = new Dialog(context);
+        //dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //dialog.setContentView(R.layout.image_view);
 
-        ImageView image = (ImageView) dialog.findViewById(R.id.image_view);
-
+        ImageView image = (ImageView) findViewById(R.id.image_view);
+        image.setImageDrawable(resizedBitmap);
 // !!! Do here setBackground() instead of setImageDrawable() !!! //
-        image.setBackground(resizedBitmap);
+         //image.setImageDrawable(R.drawable.greenstar);
+        System.out.println("Was here In IMAGE IMAGE NOT SET!!!");
+            //image.setImageDrawable(resizedBitmap);
     }
 }
