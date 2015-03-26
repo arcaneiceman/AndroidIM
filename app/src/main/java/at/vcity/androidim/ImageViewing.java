@@ -30,24 +30,28 @@ public class ImageViewing extends Activity {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        try {
+            Bundle extras = this.getIntent().getExtras();
+            imgname = extras.getString(ImageInfo.IMAGE_NAME);
+            key = extras.getString(ImageInfo.IMAGE_KEY);
+            Context context = this.getApplicationContext();
 
-        Bundle extras = this.getIntent().getExtras();
-        imgname=extras.getString(ImageInfo.IMAGE_NAME);
-        key = extras.getString(ImageInfo.IMAGE_KEY);
-        Context context= this.getApplicationContext();
+            //Display display = context.getWindowManager().getDefaultDisplay();
+            Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int screenWidth = size.x;
+            int screenHeight = size.y;
+            byte[] data = null;
+            System.out.println("Key was " + key);
+            if (key == null) {
+                //Toast.
+                this.finish();
+            }
 
-        //Display display = context.getWindowManager().getDefaultDisplay();
-        Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int screenWidth = size.x;
-        int screenHeight = size.y;
-        byte[] data= null;
-        System.out.println("Key was "  +key);
-        try{
-            File newFile = new File (imgname);
-            System.out.println("File exists : " +newFile.getAbsolutePath() + " "+  newFile.exists());
-            data = CryptoFileUtils.decrypt(key,newFile);
+            File newFile = new File(imgname);
+            System.out.println("File exists : " + newFile.getAbsolutePath() + " " + newFile.exists());
+            data = CryptoFileUtils.decrypt(key, newFile);
 
             //File newFile = new File ("/storage/sdcard/Download/webcam-toy-photo1.jpg");
             //System.out.println("File exists : " +newFile.getAbsolutePath() + " "+  newFile.exists());
@@ -56,39 +60,38 @@ public class ImageViewing extends Activity {
             //inputStream.read(data);
             //inputStream.close();
             System.out.println("lenght =  " + data.length);
+
+
+// Get target image size
+            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+            int bitmapHeight = bitmap.getHeight();
+            int bitmapWidth = bitmap.getWidth();
+
+// Scale the image down to fit perfectly into the screen
+// The value (250 in this case) must be adjusted for phone/tables displays
+            while (bitmapHeight > (screenHeight - 250) || bitmapWidth > (screenWidth - 250)) {
+                bitmapHeight = bitmapHeight / 2;
+                bitmapWidth = bitmapWidth / 2;
+            }
+
+// Create resized bitmap image
+            BitmapDrawable resizedBitmap = new BitmapDrawable(context.getResources(), Bitmap.createScaledBitmap(bitmap, bitmapWidth, bitmapHeight, false));
+            setContentView(R.layout.image_view);
+// Create dialog
+            // dialog = new Dialog(context);
+            //dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            //dialog.setContentView(R.layout.image_view);
+
+            ImageView image = (ImageView) findViewById(R.id.image_view);
+            image.setImageDrawable(resizedBitmap);
+// !!! Do here setBackground() instead of setImageDrawable() !!! //
+            //image.setImageDrawable(R.drawable.greenstar)
         }
         catch (Exception E){
             System.err.println("It finished prematurely.");
             E.printStackTrace();
+            this.finish();
         }
-
-
-
-// Get target image size
-        Bitmap bitmap =BitmapFactory.decodeByteArray(data, 0, data.length);
-        int bitmapHeight = bitmap.getHeight();
-        int bitmapWidth = bitmap.getWidth();
-
-// Scale the image down to fit perfectly into the screen
-// The value (250 in this case) must be adjusted for phone/tables displays
-        while (bitmapHeight > (screenHeight - 250) || bitmapWidth > (screenWidth - 250)) {
-            bitmapHeight = bitmapHeight / 2;
-            bitmapWidth = bitmapWidth / 2;
-        }
-
-// Create resized bitmap image
-        BitmapDrawable resizedBitmap = new BitmapDrawable(context.getResources(), Bitmap.createScaledBitmap(bitmap, bitmapWidth, bitmapHeight, false));
-        setContentView(R.layout.image_view);
-// Create dialog
-        // dialog = new Dialog(context);
-        //dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        //dialog.setContentView(R.layout.image_view);
-
-        ImageView image = (ImageView) findViewById(R.id.image_view);
-        image.setImageDrawable(resizedBitmap);
-// !!! Do here setBackground() instead of setImageDrawable() !!! //
-         //image.setImageDrawable(R.drawable.greenstar);
-        System.out.println("Was here In IMAGE IMAGE NOT SET!!!");
             //image.setImageDrawable(resizedBitmap);
     }
 }

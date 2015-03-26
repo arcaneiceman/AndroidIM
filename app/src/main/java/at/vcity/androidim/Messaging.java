@@ -192,7 +192,7 @@ public class Messaging extends Activity {
                 else if (unencryptedlink.length()>0){
                     //I got a picture.
                     //Step 1 encrypt it
-                   outputfilename="/storage/sdcard/Download/"+RandomStringUtils.randomAlphabetic(10);
+                   outputfilename=android.os.Environment.getExternalStorageDirectory()+"/Download/"+RandomStringUtils.randomAlphabetic(10);
                     Thread thread = new Thread(){
                         public void run(){
                             try{

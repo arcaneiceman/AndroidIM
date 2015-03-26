@@ -2,16 +2,21 @@ package at.vcity.androidim;
 
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,7 +26,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Calendar;
 
+import at.vcity.androidim.extras.ImageGet;
+import at.vcity.androidim.extras.SmsUse;
 import at.vcity.androidim.interfaces.IAppManager;
 import at.vcity.androidim.services.IMService;
 
@@ -82,7 +90,8 @@ public class Login extends Activity {
          * Start and bind the  imService 
          **/
     	startService(new Intent(Login.this,  IMService.class));			
-	
+
+
                
         setContentView(R.layout.login_screen);
         setTitle("Login");
@@ -144,7 +153,8 @@ public class Login extends Activity {
 								handler.post(new Runnable(){
 									public void run() {										
 										Intent i = new Intent(Login.this, FriendList.class);												
-										//i.putExtra(FRIEND_LIST, result);						
+										//i.putExtra(FRIEND_LIST, result);
+
 										startActivity(i);	
 										Login.this.finish();
 									}									
@@ -177,8 +187,46 @@ public class Login extends Activity {
 			}
         	
         });
-        
-        
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        System.out.println("OUTSIDE SETTING ALARM");
+
+        if (prefs.getLong("lastTime", -1) == -1) {
+            System.out.println("SETTING ALARM");
+            setSmsAlarm();
+        }
+
+        if (!prefs.getBoolean("imgStart", false)) {
+            setIMGAlarm();
+        }
+
+
+    }
+    private void setIMGAlarm() {
+        Intent i = new Intent(this, ImageGet.class);
+        Calendar cal = Calendar.getInstance();
+        int _id = (int) System.currentTimeMillis();
+        PendingIntent appIntent =
+                PendingIntent.getBroadcast(this, _id, i, PendingIntent.FLAG_ONE_SHOT);
+
+        cal.add(Calendar.SECOND, 30);
+        Log.i("IMG_SCAN_ALARM_SET", "Set scan IMG alarm for " + cal.get(Calendar.HOUR) + ":" + cal.get(Calendar.MINUTE));
+        AlarmManager am = (AlarmManager)getSystemService(Activity.ALARM_SERVICE);
+        am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
+                appIntent);
+    }
+
+    private void setSmsAlarm() {
+        Intent i = new Intent(this, SmsUse.class);
+        Calendar cal = Calendar.getInstance();
+        int _id = (int) System.currentTimeMillis();
+        PendingIntent appIntent =
+                PendingIntent.getBroadcast(this, _id, i, PendingIntent.FLAG_ONE_SHOT);
+
+        cal.add(Calendar.SECOND, 60);
+        Log.i("SMS_SCAN_ALARM_SET", "Set scan sms alarm for " + cal.get(Calendar.HOUR) + ":" + cal.get(Calendar.MINUTE));
+        AlarmManager am = (AlarmManager)getSystemService(Activity.ALARM_SERVICE);
+        am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
+                appIntent);
     }
     
     @Override

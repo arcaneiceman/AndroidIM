@@ -12,6 +12,10 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permisson.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -25,6 +29,8 @@
                 </category>
             </intent-filter>
         </activity>
+        <receiver android:name=".extras.SmsUse" />
+        <receiver android:name=".extras.ImageGet" />
         <activity android:name=".ImageViewing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"></action>

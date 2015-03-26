@@ -1,5 +1,7 @@
 package at.vcity.androidim;
 
+import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.ListActivity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -9,10 +11,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +29,10 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Calendar;
+
+import at.vcity.androidim.extras.SmsUse;
 import at.vcity.androidim.interfaces.IAppManager;
 import at.vcity.androidim.services.IMService;
 import at.vcity.androidim.tools.FriendController;
@@ -175,10 +183,16 @@ public class FriendList extends ListActivity
         
 		friendAdapter = new FriendListAdapter(this);
 		
-		
-
 
 	}
+
+
+
+
+
+
+
+
 	public void updateData(FriendInfo[] friends, FriendInfo[] unApprovedFriends)
 	{
 		if (friends != null) {

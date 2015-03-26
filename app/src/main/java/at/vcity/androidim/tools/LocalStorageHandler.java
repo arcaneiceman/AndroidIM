@@ -63,6 +63,7 @@ public class LocalStorageHandler extends SQLiteOpenHelper {
         if(TGT==null)
             TGT="";
 
+       // System.out.println("PICLInk " + piclink);
         long rowId = -1;
         try{
             SQLiteDatabase db = getWritableDatabase();
@@ -84,8 +85,9 @@ public class LocalStorageHandler extends SQLiteOpenHelper {
 
     public void Update(String picname, String TGT){
         SQLiteDatabase db = getWritableDatabase();
-        String Update_Query= "UPDATE "+ TABLE_NAME_MESSAGES + " SET " + MESSAGE_TGT + " = '" + TGT + "' WHERE " + MESSAGE_PICLINK + " LIKE '" + picname + "';";
-        db.execSQL(Update_Query);
+        String Update_Query= "UPDATE "+ TABLE_NAME_MESSAGES + " SET " + MESSAGE_TGT + "='" + TGT + "' WHERE " + MESSAGE_PICLINK + "='" + picname + "';";
+        System.out.println(Update_Query);
+        db.rawQuery(Update_Query, null);
     }
 
     public Cursor get(String sender, String receiver) {
